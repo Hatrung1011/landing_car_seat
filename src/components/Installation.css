@@ -1,0 +1,139 @@
+.installation {
+    padding: var(--section-padding);
+    background: var(--color-white);
+}
+
+.installation__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+}
+
+.installation__image {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+}
+
+.installation__image img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: var(--radius-xl);
+}
+
+.installation__image-badge {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background: var(--color-navy);
+    color: var(--color-white);
+    padding: 16px 24px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.installation__image-badge-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-gold);
+    line-height: 1;
+}
+
+.installation__image-badge-label {
+    font-size: 12px;
+    color: var(--color-white-alpha-70);
+    margin-top: 4px;
+    display: block;
+}
+
+.installation__content em {
+    font-style: italic;
+    color: var(--color-gold);
+}
+
+.installation__desc {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+.installation__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.installation__step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+.installation__step:hover {
+    background: var(--color-cream);
+}
+
+.installation__step-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-navy), var(--color-navy-light));
+    color: var(--color-gold);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.installation__step-content {
+    position: relative;
+}
+
+.installation__step-number {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    color: var(--color-gold);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.installation__step-title {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-bottom: 4px;
+}
+
+.installation__step-desc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+    .installation__layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .installation__image img {
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .installation__image img {
+        height: 280px;
+    }
+}
