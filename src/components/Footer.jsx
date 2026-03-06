@@ -19,11 +19,7 @@ const Footer = () => {
                     <div className="footer__col footer__col--brand">
                         <div className="footer__brand">
                             <span className="footer__logo-icon">
-                                <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-                                    <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2" />
-                                    <path d="M10 20C10 16 12 12 16 12C20 12 22 16 22 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                                    <circle cx="16" cy="10" r="3" stroke="currentColor" strokeWidth="2" />
-                                </svg>
+                                <img src="/logo_car_seat.png" alt="Nhật Hạ" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
                             </span>
                             <div>
                                 <span className="footer__brand-name">Nhật Hạ Store</span>
