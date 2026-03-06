@@ -58,7 +58,7 @@ const Products = () => {
                 </div>
                 <div className="products__grid">
                     {products.map((product, index) => (
-                        <Link key={product.id} to={`/san-pham/${product.slug}`} className={`products__card animate-on-scroll delay-${index + 2}`}>
+                        <Link key={product.id} to={`/san-pham/${product.slug}`} className="products__card" style={{ animation: `fadeInUp 0.7s ease ${index * 0.15}s both` }}>
                             <div className="products__card-image">
                                 <img src={product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/600x400'} alt={product.name} />
                                 {product.badge && <span className="products__card-tag">{product.badge}</span>}
@@ -81,7 +81,7 @@ const Products = () => {
                         </Link>
                     ))}
                 </div>
-                <div className="products__cta text-center animate-on-scroll delay-5">
+                <div className="products__cta text-center" style={{ animation: 'fadeInUp 0.7s ease 0.5s both' }}>
                     <Link to="/san-pham" className="btn btn-outline">
                         Xem Tất Cả Sản Phẩm
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
