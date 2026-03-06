@@ -1,9 +1,11 @@
+import { Link } from 'react-router-dom';
 import './Products.css';
 
 const products = [
     {
         id: 1,
         name: 'Nhật Hạ Cocoon',
+        slug: 'nhat-ha-cocoon-plus',
         ageRange: 'Sơ sinh — 12 tháng',
         price: '12.900.000₫',
         originalPrice: '15.900.000₫',
@@ -14,6 +16,7 @@ const products = [
     {
         id: 2,
         name: 'Nhật Hạ Explorer',
+        slug: 'sirona-t-i-size',
         ageRange: '1 — 4 tuổi',
         price: '14.500.000₫',
         originalPrice: '18.000.000₫',
@@ -24,6 +27,7 @@ const products = [
     {
         id: 3,
         name: 'Nhật Hạ Guardian',
+        slug: 'pallas-g3',
         ageRange: '4 — 12 tuổi',
         price: '9.800.000₫',
         originalPrice: '12.500.000₫',
@@ -48,12 +52,12 @@ const Products = () => {
                 </div>
                 <div className="products__grid">
                     {products.map((product, index) => (
-                        <div key={product.id} className={`products__card animate-on-scroll delay-${index + 2}`}>
+                        <Link key={product.id} to={`/san-pham/${product.slug}`} className={`products__card animate-on-scroll delay-${index + 2}`}>
                             <div className="products__card-image">
                                 <img src={product.image} alt={product.name} />
                                 <span className="products__card-tag">{product.tag}</span>
                                 <div className="products__card-overlay">
-                                    <button className="btn btn-primary">Xem Chi Tiết</button>
+                                    <span className="btn btn-primary">Xem Chi Tiết</span>
                                 </div>
                             </div>
                             <div className="products__card-body">
@@ -69,17 +73,17 @@ const Products = () => {
                                     <span className="products__card-original">{product.originalPrice}</span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
                 <div className="products__cta text-center animate-on-scroll delay-5">
-                    <a href="#" className="btn btn-outline">
+                    <Link to="/san-pham" className="btn btn-outline">
                         Xem Tất Cả Sản Phẩm
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12" />
                             <polyline points="12 5 19 12 12 19" />
                         </svg>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>
