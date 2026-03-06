@@ -1,26 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import allProducts from '../data/products';
+import { fetchProducts, fetchBrands, fetchCategories } from '../services/api';
 import './AllProducts.css';
-
-const filterConfig = {
-    brand: {
-        label: 'Thương Hiệu',
-        options: ['Nhật Hạ Platinum', 'Nhật Hạ Gold'],
-    },
-    category: {
-        label: 'Độ Tuổi',
-        options: [
-            { value: 'infant', label: 'Sơ sinh — 4 tuổi' },
-            { value: 'toddler', label: '1 — 7 tuổi' },
-            { value: 'child', label: '3 — 12 tuổi' },
-        ],
-    },
-    features: {
-        label: 'Tính Năng',
-        options: ['ISOFIX', 'Xoay 360°', 'i-Size', 'Da Ý', 'Siêu nhẹ', 'Thoáng khí'],
-    },
-};
 
 const sortOptions = [
     { value: 'recommended', label: 'Đề xuất' },
@@ -32,11 +13,44 @@ const sortOptions = [
 const ITEMS_PER_PAGE = 6;
 
 const AllProducts = () => {
+    const [allProducts, setAllProducts] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const [sortBy, setSortBy] = useState('recommended');
     const [openFilter, setOpenFilter] = useState({ brand: true, category: true, features: false });
     const [selectedFilters, setSelectedFilters] = useState({ brand: [], category: [], features: [] });
     const [activeColor, setActiveColor] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        Promise.all([fetchProducts(), fetchBrands(), fetchCategories()])
+            .then(([products, brandsData, categoriesData]) => {
+                setAllProducts(products);
+                setBrands(brandsData.filter(b => b.is_active));
+                setCategories(categoriesData.filter(c => c.is_active));
+            })
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    // Build dynamic filter config from API data
+    const allFeatures = [...new Set(allProducts.flatMap(p => p.features || []))];
+    const filterConfig = {
+        brand: {
+            label: 'Thương Hiệu',
+            options: brands.map(b => b.name),
+        },
+        category: {
+            label: 'Độ Tuổi',
+            options: categories.map(c => ({ value: c.slug, label: c.name })),
+        },
+        features: {
+            label: 'Tính Năng',
+            options: allFeatures,
+        },
+    };
 
     const toggleFilter = (key) => {
         setOpenFilter((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -67,7 +81,7 @@ const AllProducts = () => {
         if (selectedFilters.brand.length > 0 && !selectedFilters.brand.includes(product.brand)) return false;
         if (selectedFilters.category.length > 0 && !selectedFilters.category.includes(product.category)) return false;
         if (selectedFilters.features.length > 0) {
-            const hasFeature = selectedFilters.features.some((f) => product.features.includes(f));
+            const hasFeature = selectedFilters.features.some((f) => (product.features || []).includes(f));
             if (!hasFeature) return false;
         }
         return true;
@@ -76,7 +90,7 @@ const AllProducts = () => {
     const sortedProducts = [...filteredProducts].sort((a, b) => {
         if (sortBy === 'price-asc') return parseInt(a.price.replace(/\D/g, '')) - parseInt(b.price.replace(/\D/g, ''));
         if (sortBy === 'price-desc') return parseInt(b.price.replace(/\D/g, '')) - parseInt(a.price.replace(/\D/g, ''));
-        if (sortBy === 'newest') return (b.badgeType === 'new' ? 1 : 0) - (a.badgeType === 'new' ? 1 : 0);
+        if (sortBy === 'newest') return (b.badge_type === 'new' ? 1 : 0) - (a.badge_type === 'new' ? 1 : 0);
         return 0;
     });
 
@@ -99,6 +113,28 @@ const AllProducts = () => {
             default: return '';
         }
     };
+
+    if (loading) {
+        return (
+            <div className="allproducts">
+                <div className="allproducts__spacer"></div>
+                <div className="allproducts__container container">
+                    <nav className="allproducts__breadcrumb">
+                        <Link to="/">Trang chủ</Link>
+                        <span className="allproducts__breadcrumb-sep">/</span>
+                        <span>Ghế Ô Tô Trẻ Em</span>
+                    </nav>
+                    <div className="allproducts__page-header">
+                        <h1 className="allproducts__page-title">Ghế Ô Tô Trẻ Em</h1>
+                    </div>
+                    <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-secondary)' }}>
+                        <div className="spinner" style={{ margin: '0 auto 16px', width: '40px', height: '40px', border: '3px solid var(--color-surface)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                        <p>Đang tải sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="allproducts">
@@ -123,7 +159,7 @@ const AllProducts = () => {
                 <div className="allproducts__layout">
                     {/* Sidebar Filters */}
                     <aside className="allproducts__sidebar">
-                        {/* Sort (mobile-first, also shown in sidebar on desktop like Cybex) */}
+                        {/* Sort */}
                         <div className="allproducts__sort-section">
                             <button className="allproducts__sort-btn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -210,35 +246,37 @@ const AllProducts = () => {
                                     {paginatedProducts.map((product) => (
                                         <Link key={product.id} to={`/san-pham/${product.slug}`} className="allproducts__card">
                                             {product.badge && (
-                                                <span className={`allproducts__badge ${getBadgeClass(product.badgeType)}`}>
+                                                <span className={`allproducts__badge ${getBadgeClass(product.badge_type)}`}>
                                                     {product.badge}
                                                 </span>
                                             )}
                                             <div className="allproducts__card-image">
-                                                <img src={product.images[0]} alt={product.name} />
+                                                <img src={product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/400x300'} alt={product.name} />
                                             </div>
                                             {/* Color swatches */}
-                                            <div className="allproducts__colors">
-                                                <button className="allproducts__color-nav allproducts__color-nav--prev" aria-label="Previous color" onClick={(e) => e.preventDefault()}>
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
-                                                </button>
-                                                {product.colors.map((color, i) => (
-                                                    <button
-                                                        key={i}
-                                                        className={`allproducts__color-swatch ${activeColor[product.id] === i ? 'allproducts__color-swatch--active' : ''}`}
-                                                        style={{ backgroundColor: color.hex }}
-                                                        onClick={(e) => { e.preventDefault(); setActiveColor((prev) => ({ ...prev, [product.id]: i })); }}
-                                                        aria-label={color.name}
-                                                    />
-                                                ))}
-                                                <button className="allproducts__color-nav allproducts__color-nav--next" aria-label="Next color" onClick={(e) => e.preventDefault()}>
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
-                                                </button>
-                                            </div>
+                                            {product.colors && product.colors.length > 0 && (
+                                                <div className="allproducts__colors">
+                                                    <button className="allproducts__color-nav allproducts__color-nav--prev" aria-label="Previous color" onClick={(e) => e.preventDefault()}>
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
+                                                    </button>
+                                                    {product.colors.map((color, i) => (
+                                                        <button
+                                                            key={i}
+                                                            className={`allproducts__color-swatch ${activeColor[product.id] === i ? 'allproducts__color-swatch--active' : ''}`}
+                                                            style={{ backgroundColor: color.hex }}
+                                                            onClick={(e) => { e.preventDefault(); setActiveColor((prev) => ({ ...prev, [product.id]: i })); }}
+                                                            aria-label={color.name}
+                                                        />
+                                                    ))}
+                                                    <button className="allproducts__color-nav allproducts__color-nav--next" aria-label="Next color" onClick={(e) => e.preventDefault()}>
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+                                                    </button>
+                                                </div>
+                                            )}
                                             <div className="allproducts__card-info">
                                                 <span className="allproducts__card-brand">{product.brand}</span>
                                                 <h3 className="allproducts__card-name">{product.name}</h3>
-                                                <p className="allproducts__card-age">{product.ageRange}</p>
+                                                <p className="allproducts__card-age">{product.age_range}</p>
                                                 <p className="allproducts__card-price">{product.price}</p>
                                             </div>
                                         </Link>

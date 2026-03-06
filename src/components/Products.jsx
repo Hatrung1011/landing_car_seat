@@ -1,43 +1,49 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchProducts } from '../services/api';
 import './Products.css';
 
-const products = [
-    {
-        id: 1,
-        name: 'Nhật Hạ Cocoon',
-        slug: 'nhat-ha-cocoon-plus',
-        ageRange: 'Sơ sinh — 12 tháng',
-        price: '12.900.000₫',
-        originalPrice: '15.900.000₫',
-        image: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&q=80',
-        tag: 'Bestseller',
-        features: ['Xoay 360°', 'ISOFIX', 'Da Ý'],
-    },
-    {
-        id: 2,
-        name: 'Nhật Hạ Explorer',
-        slug: 'sirona-t-i-size',
-        ageRange: '1 — 4 tuổi',
-        price: '14.500.000₫',
-        originalPrice: '18.000.000₫',
-        image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80',
-        tag: 'Mới nhất',
-        features: ['5 tư thế ngả', 'ISOFIX', 'Thoáng khí'],
-    },
-    {
-        id: 3,
-        name: 'Nhật Hạ Guardian',
-        slug: 'pallas-g3',
-        ageRange: '4 — 12 tuổi',
-        price: '9.800.000₫',
-        originalPrice: '12.500.000₫',
-        image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80',
-        tag: 'Hot Deal',
-        features: ['Tăng trưởng cùng bé', 'ISOFIX', 'Siêu nhẹ'],
-    },
-];
-
 const Products = () => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchProducts()
+            .then((data) => {
+                // Show first 3 products for the landing page preview
+                setProducts(data.slice(0, 3));
+            })
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <section className="products" id="san-pham">
+                <div className="container">
+                    <div className="products__header text-center">
+                        <span className="section-label animate-on-scroll">Bộ Sưu Tập</span>
+                        <h2 className="section-title animate-on-scroll delay-1">
+                            Ghế Ô Tô Cao Cấp Cho Mọi Độ Tuổi
+                        </h2>
+                    </div>
+                    <div className="products__grid">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="products__card products__card--skeleton animate-on-scroll">
+                                <div className="products__card-image" style={{ background: 'var(--color-surface)', aspectRatio: '4/3' }} />
+                                <div className="products__card-body">
+                                    <div style={{ height: '14px', width: '60%', background: 'var(--color-surface)', borderRadius: '4px', marginBottom: '8px' }} />
+                                    <div style={{ height: '18px', width: '80%', background: 'var(--color-surface)', borderRadius: '4px', marginBottom: '8px' }} />
+                                    <div style={{ height: '14px', width: '40%', background: 'var(--color-surface)', borderRadius: '4px' }} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="products" id="san-pham">
             <div className="container">
@@ -54,23 +60,22 @@ const Products = () => {
                     {products.map((product, index) => (
                         <Link key={product.id} to={`/san-pham/${product.slug}`} className={`products__card animate-on-scroll delay-${index + 2}`}>
                             <div className="products__card-image">
-                                <img src={product.image} alt={product.name} />
-                                <span className="products__card-tag">{product.tag}</span>
+                                <img src={product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/600x400'} alt={product.name} />
+                                {product.badge && <span className="products__card-tag">{product.badge}</span>}
                                 <div className="products__card-overlay">
                                     <span className="btn btn-primary">Xem Chi Tiết</span>
                                 </div>
                             </div>
                             <div className="products__card-body">
                                 <div className="products__card-features">
-                                    {product.features.map((f, i) => (
+                                    {product.features && product.features.map((f, i) => (
                                         <span key={i} className="products__card-feature">{f}</span>
                                     ))}
                                 </div>
                                 <h3 className="products__card-name">{product.name}</h3>
-                                <p className="products__card-age">{product.ageRange}</p>
+                                <p className="products__card-age">{product.age_range}</p>
                                 <div className="products__card-pricing">
                                     <span className="products__card-price">{product.price}</span>
-                                    <span className="products__card-original">{product.originalPrice}</span>
                                 </div>
                             </div>
                         </Link>

@@ -1,14 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import allProducts from '../data/products';
+import { fetchProducts } from '../services/api';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
     const { slug } = useParams();
-    const product = allProducts.find((p) => p.slug === slug);
+    const [product, setProduct] = useState(null);
+    const [allProducts, setAllProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(0);
     const [activeTab, setActiveTab] = useState('specs');
+
+    useEffect(() => {
+        setLoading(true);
+        setSelectedImage(0);
+        setSelectedColor(0);
+        setActiveTab('specs');
+        fetchProducts()
+            .then((data) => {
+                setAllProducts(data);
+                const found = data.find((p) => p.slug === slug);
+                setProduct(found || null);
+            })
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, [slug]);
+
+    if (loading) {
+        return (
+            <div className="pd">
+                <div className="pd__spacer"></div>
+                <div className="container" style={{ textAlign: 'center', padding: '80px 0', color: 'var(--color-text-secondary)' }}>
+                    <div style={{ margin: '0 auto 16px', width: '40px', height: '40px', border: '3px solid var(--color-surface)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <p>Đang tải sản phẩm...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -57,27 +86,29 @@ const ProductDetail = () => {
                     <div className="pd__gallery">
                         <div className="pd__gallery-main">
                             {product.badge && (
-                                <span className={`pd__badge ${getBadgeClass(product.badgeType)}`}>
+                                <span className={`pd__badge ${getBadgeClass(product.badge_type)}`}>
                                     {product.badge}
                                 </span>
                             )}
                             <img
-                                src={product.images[selectedImage]}
+                                src={product.images && product.images[selectedImage] ? product.images[selectedImage] : 'https://via.placeholder.com/800x600'}
                                 alt={`${product.name} - Ảnh ${selectedImage + 1}`}
                                 className="pd__gallery-image"
                             />
                         </div>
-                        <div className="pd__gallery-thumbs">
-                            {product.images.map((img, i) => (
-                                <button
-                                    key={i}
-                                    className={`pd__thumb ${selectedImage === i ? 'pd__thumb--active' : ''}`}
-                                    onClick={() => setSelectedImage(i)}
-                                >
-                                    <img src={img} alt={`Thumbnail ${i + 1}`} />
-                                </button>
-                            ))}
-                        </div>
+                        {product.images && product.images.length > 1 && (
+                            <div className="pd__gallery-thumbs">
+                                {product.images.map((img, i) => (
+                                    <button
+                                        key={i}
+                                        className={`pd__thumb ${selectedImage === i ? 'pd__thumb--active' : ''}`}
+                                        onClick={() => setSelectedImage(i)}
+                                    >
+                                        <img src={img} alt={`Thumbnail ${i + 1}`} />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Product Info */}
@@ -91,18 +122,20 @@ const ProductDetail = () => {
                                     <circle cx="12" cy="12" r="10" />
                                     <polyline points="12 6 12 12 16 14" />
                                 </svg>
-                                {product.ageRange}
+                                {product.age_range}
                             </span>
-                            <span className="pd__meta-item">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                                    <line x1="7" y1="7" x2="7.01" y2="7" />
-                                </svg>
-                                {product.weight}
-                            </span>
+                            {product.weight && (
+                                <span className="pd__meta-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                                        <line x1="7" y1="7" x2="7.01" y2="7" />
+                                    </svg>
+                                    {product.weight}
+                                </span>
+                            )}
                         </div>
 
-                        <p className="pd__description">{product.description}</p>
+                        {product.description && <p className="pd__description">{product.description}</p>}
 
                         <div className="pd__price-block">
                             <span className="pd__price">{product.price}</span>
@@ -110,30 +143,34 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Color Selection */}
-                        <div className="pd__colors">
-                            <span className="pd__colors-label">
-                                Màu sắc: <strong>{product.colors[selectedColor].name}</strong>
-                            </span>
-                            <div className="pd__colors-list">
-                                {product.colors.map((color, i) => (
-                                    <button
-                                        key={i}
-                                        className={`pd__color-btn ${selectedColor === i ? 'pd__color-btn--active' : ''}`}
-                                        style={{ backgroundColor: color.hex }}
-                                        onClick={() => setSelectedColor(i)}
-                                        aria-label={color.name}
-                                        title={color.name}
-                                    />
-                                ))}
+                        {product.colors && product.colors.length > 0 && (
+                            <div className="pd__colors">
+                                <span className="pd__colors-label">
+                                    Màu sắc: <strong>{product.colors[selectedColor]?.name}</strong>
+                                </span>
+                                <div className="pd__colors-list">
+                                    {product.colors.map((color, i) => (
+                                        <button
+                                            key={i}
+                                            className={`pd__color-btn ${selectedColor === i ? 'pd__color-btn--active' : ''}`}
+                                            style={{ backgroundColor: color.hex }}
+                                            onClick={() => setSelectedColor(i)}
+                                            aria-label={color.name}
+                                            title={color.name}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Feature Tags */}
-                        <div className="pd__features">
-                            {product.features.map((f, i) => (
-                                <span key={i} className="pd__feature-tag">{f}</span>
-                            ))}
-                        </div>
+                        {product.features && product.features.length > 0 && (
+                            <div className="pd__features">
+                                {product.features.map((f, i) => (
+                                    <span key={i} className="pd__feature-tag">{f}</span>
+                                ))}
+                            </div>
+                        )}
 
                         {/* CTA Buttons */}
                         <div className="pd__cta">
@@ -184,55 +221,61 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Tabs: Specs + Highlights */}
-                <div className="pd__tabs-section">
-                    <div className="pd__tabs">
-                        <button
-                            className={`pd__tab ${activeTab === 'specs' ? 'pd__tab--active' : ''}`}
-                            onClick={() => setActiveTab('specs')}
-                        >
-                            Thông Số Kỹ Thuật
-                        </button>
-                        <button
-                            className={`pd__tab ${activeTab === 'highlights' ? 'pd__tab--active' : ''}`}
-                            onClick={() => setActiveTab('highlights')}
-                        >
-                            Điểm Nổi Bật
-                        </button>
-                    </div>
+                {(product.specs || product.highlights) && (
+                    <div className="pd__tabs-section">
+                        <div className="pd__tabs">
+                            {product.specs && (
+                                <button
+                                    className={`pd__tab ${activeTab === 'specs' ? 'pd__tab--active' : ''}`}
+                                    onClick={() => setActiveTab('specs')}
+                                >
+                                    Thông Số Kỹ Thuật
+                                </button>
+                            )}
+                            {product.highlights && product.highlights.length > 0 && (
+                                <button
+                                    className={`pd__tab ${activeTab === 'highlights' ? 'pd__tab--active' : ''}`}
+                                    onClick={() => setActiveTab('highlights')}
+                                >
+                                    Điểm Nổi Bật
+                                </button>
+                            )}
+                        </div>
 
-                    <div className="pd__tab-content">
-                        {activeTab === 'specs' && (
-                            <div className="pd__specs">
-                                <table className="pd__specs-table">
-                                    <tbody>
-                                        {Object.entries(product.specs).map(([key, value], i) => (
-                                            <tr key={i} className={i % 2 === 0 ? 'pd__specs-row--even' : ''}>
-                                                <td className="pd__specs-key">{key}</td>
-                                                <td className="pd__specs-value">{value}</td>
-                                            </tr>
+                        <div className="pd__tab-content">
+                            {activeTab === 'specs' && product.specs && (
+                                <div className="pd__specs">
+                                    <table className="pd__specs-table">
+                                        <tbody>
+                                            {Object.entries(product.specs).map(([key, value], i) => (
+                                                <tr key={i} className={i % 2 === 0 ? 'pd__specs-row--even' : ''}>
+                                                    <td className="pd__specs-key">{key}</td>
+                                                    <td className="pd__specs-value">{value}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            {activeTab === 'highlights' && product.highlights && (
+                                <div className="pd__highlights">
+                                    <ul className="pd__highlights-list">
+                                        {product.highlights.map((h, i) => (
+                                            <li key={i} className="pd__highlight-item">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                                </svg>
+                                                <span>{h}</span>
+                                            </li>
                                         ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-
-                        {activeTab === 'highlights' && (
-                            <div className="pd__highlights">
-                                <ul className="pd__highlights-list">
-                                    {product.highlights.map((h, i) => (
-                                        <li key={i} className="pd__highlight-item">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                                <polyline points="22 4 12 14.01 9 11.01" />
-                                            </svg>
-                                            <span>{h}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Related Products */}
                 {relatedProducts.length > 0 && (
@@ -242,12 +285,12 @@ const ProductDetail = () => {
                             {relatedProducts.map((rp) => (
                                 <Link key={rp.id} to={`/san-pham/${rp.slug}`} className="pd__related-card">
                                     <div className="pd__related-image">
-                                        <img src={rp.images[0]} alt={rp.name} />
+                                        <img src={rp.images && rp.images[0] ? rp.images[0] : 'https://via.placeholder.com/400x300'} alt={rp.name} />
                                     </div>
                                     <div className="pd__related-info">
                                         <span className="pd__related-brand">{rp.brand}</span>
                                         <h3 className="pd__related-name">{rp.name}</h3>
-                                        <p className="pd__related-age">{rp.ageRange}</p>
+                                        <p className="pd__related-age">{rp.age_range}</p>
                                         <p className="pd__related-price">{rp.price}</p>
                                     </div>
                                 </Link>
