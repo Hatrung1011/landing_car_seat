@@ -127,8 +127,8 @@ const AllProducts = () => {
                     <div className="allproducts__page-header">
                         <h1 className="allproducts__page-title">Ghế Ô Tô Trẻ Em</h1>
                     </div>
-                    <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-secondary)' }}>
-                        <div className="spinner" style={{ margin: '0 auto 16px', width: '40px', height: '40px', border: '3px solid var(--color-surface)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <div className="loader-wrapper">
+                        <div className="loader"></div>
                         <p>Đang tải sản phẩm...</p>
                     </div>
                 </div>

@@ -22,22 +22,14 @@ const Products = () => {
             <section className="products" id="san-pham">
                 <div className="container">
                     <div className="products__header text-center">
-                        <span className="section-label animate-on-scroll">Bộ Sưu Tập</span>
-                        <h2 className="section-title animate-on-scroll delay-1">
+                        <span className="section-label">Bộ Sưu Tập</span>
+                        <h2 className="section-title">
                             Ghế Ô Tô Cao Cấp Cho Mọi Độ Tuổi
                         </h2>
                     </div>
-                    <div className="products__grid">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="products__card products__card--skeleton animate-on-scroll">
-                                <div className="products__card-image" style={{ background: 'var(--color-surface)', aspectRatio: '4/3' }} />
-                                <div className="products__card-body">
-                                    <div style={{ height: '14px', width: '60%', background: 'var(--color-surface)', borderRadius: '4px', marginBottom: '8px' }} />
-                                    <div style={{ height: '18px', width: '80%', background: 'var(--color-surface)', borderRadius: '4px', marginBottom: '8px' }} />
-                                    <div style={{ height: '14px', width: '40%', background: 'var(--color-surface)', borderRadius: '4px' }} />
-                                </div>
-                            </div>
-                        ))}
+                    <div className="loader-wrapper">
+                        <div className="loader"></div>
+                        <p>Đang tải sản phẩm...</p>
                     </div>
                 </div>
             </section>

@@ -31,9 +31,11 @@ const ProductDetail = () => {
         return (
             <div className="pd">
                 <div className="pd__spacer"></div>
-                <div className="container" style={{ textAlign: 'center', padding: '80px 0', color: 'var(--color-text-secondary)' }}>
-                    <div style={{ margin: '0 auto 16px', width: '40px', height: '40px', border: '3px solid var(--color-surface)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                    <p>Đang tải sản phẩm...</p>
+                <div className="container">
+                    <div className="loader-wrapper" style={{ padding: '80px 0' }}>
+                        <div className="loader"></div>
+                        <p>Đang tải sản phẩm...</p>
+                    </div>
                 </div>
             </div>
         );
