@@ -32,7 +32,7 @@ const ProductDetail = () => {
             <div className="pd">
                 <div className="pd__spacer"></div>
                 <div className="container">
-                    <div className="loader-wrapper" style={{ padding: '80px 0' }}>
+                    <div className="loader-wrapper">
                         <div className="loader"></div>
                         <p>Đang tải sản phẩm...</p>
                     </div>
