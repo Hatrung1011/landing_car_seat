@@ -5,7 +5,6 @@ import './Products.css';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchProducts()
@@ -13,28 +12,8 @@ const Products = () => {
                 // Show first 3 products for the landing page preview
                 setProducts(data.slice(0, 3));
             })
-            .catch(console.error)
-            .finally(() => setLoading(false));
+            .catch(console.error);
     }, []);
-
-    if (loading) {
-        return (
-            <section className="products" id="san-pham">
-                <div className="container">
-                    <div className="products__header text-center">
-                        <span className="section-label">Bộ Sưu Tập</span>
-                        <h2 className="section-title">
-                            Ghế Ô Tô Cao Cấp Cho Mọi Độ Tuổi
-                        </h2>
-                    </div>
-                    <div className="loader-wrapper">
-                        <div className="loader"></div>
-                        <p>Đang tải sản phẩm...</p>
-                    </div>
-                </div>
-            </section>
-        );
-    }
 
     return (
         <section className="products" id="san-pham">
