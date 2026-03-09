@@ -79,7 +79,7 @@ const Installation = () => {
                                 </div>
                             ))}
                         </div>
-                        <a href="tel:0901234567" className="btn btn-primary animate-on-scroll delay-5" style={{ marginTop: '32px' }}>
+                        <a href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="btn btn-primary animate-on-scroll delay-5" style={{ marginTop: '32px' }}>
                             Đặt Lịch Ngay
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
