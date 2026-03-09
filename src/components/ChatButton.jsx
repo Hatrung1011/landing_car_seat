@@ -3,7 +3,7 @@ import './ChatButton.css';
 const ChatButton = () => {
     return (
         <a
-            href="https://zalo.me/0901234567"
+            href="https://zalo.me/0368081193"
             target="_blank"
             rel="noopener noreferrer"
             className="chat-button"
