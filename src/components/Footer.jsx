@@ -1,16 +1,7 @@
-import { useState } from 'react';
+
 import './Footer.css';
 
 const Footer = () => {
-    const [email, setEmail] = useState('');
-
-    const handleSubscribe = (e) => {
-        e.preventDefault();
-        if (email) {
-            alert('Cảm ơn bạn đã đăng ký! Chúng tôi sẽ gửi thông tin ưu đãi sớm nhất.');
-            setEmail('');
-        }
-    };
 
     return (
         <footer className="footer" id="lien-he">
@@ -74,7 +65,7 @@ const Footer = () => {
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
                                 </svg>
-                                123 Nguyễn Huệ, Quận 1, TP.HCM
+                                Khu 7 (Thạch Đồng), Xã Đào Xá, Tỉnh Phú Thọ
                             </li>
                             <li>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -86,7 +77,7 @@ const Footer = () => {
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                                 </svg>
-                                info@nhathastore.vn
+                                nhathastore2024@gmail.com
                             </li>
                             <li>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -97,24 +88,11 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    <div className="footer__col">
-                        <h4 className="footer__col-title">Nhận Ưu Đãi</h4>
-                        <p className="footer__newsletter-desc">Đăng ký để nhận thông tin ưu đãi độc quyền và hướng dẫn chọn ghế an toàn cho bé.</p>
-                        <form className="footer__newsletter" onSubmit={handleSubscribe}>
-                            <input
-                                type="email"
-                                placeholder="Email của bạn..."
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="footer__newsletter-input"
-                                required
-                            />
-                            <button type="submit" className="footer__newsletter-btn">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-                                </svg>
-                            </button>
-                        </form>
+                    <div className="footer__col footer__col--map">
+                        <h4 className="footer__col-title">Bản Đồ</h4>
+                        <div className="footer__map">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.5982294577925!2d105.3088064!3d21.2081136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3134871fbfe96a17%3A0x8fd5796b136f21ae!2zQmFieSBDYXIgU2VhdCBOaOG6rXQgSOG6oSBTdG9yZQ!5e0!3m2!1svi!2s!4v1773042211110!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
                     </div>
                 </div>
 
