@@ -1,0 +1,17 @@
+services:
+  landing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE}
+    container_name: car-seat-landing
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
