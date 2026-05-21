@@ -53,7 +53,7 @@ export default function Testimonials() {
       <div className="container-page">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <span className="section-label animate-on-scroll">Khách Hàng Nói Gì</span>
-          <h2 className="animate-on-scroll delay-1 mt-3 font-heading text-3xl md:text-4xl">
+          <h2 className="animate-on-scroll scroll-delay-1 mt-3 font-heading text-3xl md:text-4xl">
             Được{' '}
             <HighlightText variant="marker" color="accent">
               10,000+
@@ -62,7 +62,7 @@ export default function Testimonials() {
           </h2>
         </div>
 
-        <div className="animate-on-scroll delay-2 mx-auto max-w-3xl">
+        <div className="animate-on-scroll scroll-delay-2 mx-auto max-w-3xl">
           <Card className="overflow-hidden border-border/60 shadow-lg">
             <CardContent className="p-8 md:p-12">
               <Quote className="mb-4 size-10 text-accent/30" />

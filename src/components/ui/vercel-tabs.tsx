@@ -69,7 +69,7 @@ export function VercelTabs({ tabs, defaultTab, className }: VercelTabsProps) {
       <TabsList className="relative h-auto select-none gap-[6px] bg-transparent p-0">
         {/* Hover Highlight */}
         <div
-          className="absolute top-0 left-0 flex h-[30px] items-center rounded-[6px] bg-[#0e0f1114] transition-all duration-300 ease-out dark:bg-[#ffffff1a]"
+          className="absolute top-0 left-0 flex h-[30px] items-center rounded-[6px] bg-primary/10 transition-all duration-300 ease-out"
           style={{
             ...hoverStyle,
             opacity: hoveredIndex !== null ? 1 : 0,
@@ -78,7 +78,7 @@ export function VercelTabs({ tabs, defaultTab, className }: VercelTabsProps) {
 
         {/* Active Indicator */}
         <div
-          className="absolute bottom-[-6px] h-[2px] bg-[#0e0f11] transition-all duration-300 ease-out dark:bg-white"
+          className="absolute bottom-[-6px] h-[2px] bg-accent transition-all duration-300 ease-out"
           style={activeStyle}
         />
 
@@ -91,8 +91,8 @@ export function VercelTabs({ tabs, defaultTab, className }: VercelTabsProps) {
             }}
             className={`z-10 h-[30px] cursor-pointer rounded-md border-0 bg-transparent px-3 py-2 outline-none transition-colors duration-300 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none ${
               activeTab === tab.value
-                ? "text-[#0e0e10] dark:text-white"
-                : "text-[#0e0f1199] dark:text-[#ffffff99]"
+                ? "text-primary font-semibold"
+                : "text-muted-foreground"
             }`}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}

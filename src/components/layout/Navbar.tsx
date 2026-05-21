@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -35,10 +35,7 @@ export default function Navbar() {
   const scrollToSection = (id: string) => {
     setOpen(false);
     if (!isHome) {
-      navigate('/');
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 300);
+      navigate('/', { state: { scrollTo: id } });
     } else {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -85,22 +82,25 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
-          <Button asChild className="hidden bg-accent text-accent-foreground hover:bg-accent/90 sm:inline-flex">
-            <a
-              href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <MessageCircle className="size-4" />
-              Liên Hệ
-            </a>
-          </Button>
+          <a
+            href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({ size: 'default' }),
+              'hidden bg-accent text-accent-foreground hover:bg-accent/90 sm:inline-flex',
+            )}
+          >
+            <MessageCircle className="size-4" />
+            Liên Hệ
+          </a>
 
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="outline" size="icon" aria-label="Mở menu">
-                <Menu className="size-5" />
-              </Button>
+            <SheetTrigger
+              className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'lg:hidden')}
+              aria-label="Mở menu"
+            >
+              <Menu className="size-5" />
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px]">
               <SheetHeader>
@@ -117,15 +117,17 @@ export default function Navbar() {
                     {link.label}
                   </button>
                 ))}
-                <Button asChild className="mt-4 bg-accent text-accent-foreground">
-                  <a
-                    href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Liên Hệ Facebook
-                  </a>
-                </Button>
+                <a
+                  href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants(),
+                    'mt-4 bg-accent text-accent-foreground hover:bg-accent/90',
+                  )}
+                >
+                  Liên Hệ Facebook
+                </a>
               </nav>
             </SheetContent>
           </Sheet>

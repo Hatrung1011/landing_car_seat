@@ -207,7 +207,8 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
         case "marker": {
           const markerHeight = height + 4;
           const y1 = padding - 2;
-          const _y2 = padding + markerHeight;
+          const markerBottom = padding + markerHeight;
+          void markerBottom;
 
           return (
             <svg style={baseStyles} aria-hidden="true">

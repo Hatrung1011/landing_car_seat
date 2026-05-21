@@ -1,6 +1,9 @@
 import { MessageCircle, ShoppingCart, Wrench, BookOpen, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+
+const STEP_DELAYS = ['scroll-delay-2', 'scroll-delay-3', 'scroll-delay-4', 'scroll-delay-5'] as const;
 
 const steps = [
   {
@@ -52,12 +55,12 @@ export default function Installation() {
 
           <div>
             <span className="section-label animate-on-scroll">Dịch Vụ Trọn Gói</span>
-            <h2 className="animate-on-scroll delay-1 mt-3 font-heading text-3xl md:text-4xl">
+            <h2 className="animate-on-scroll scroll-delay-1 mt-3 font-heading text-3xl md:text-4xl">
               Lắp Đặt Chuyên Nghiệp
               <br />
               Tận Nhà <em className="text-accent not-italic">Miễn Phí</em>
             </h2>
-            <p className="animate-on-scroll delay-2 mt-4 text-muted-foreground">
+            <p className="animate-on-scroll scroll-delay-2 mt-4 text-muted-foreground">
               Chúng tôi không chỉ bán sản phẩm — chúng tôi mang đến trải nghiệm dịch vụ 5 sao, từ tư
               vấn đến lắp đặt.
             </p>
@@ -66,7 +69,10 @@ export default function Installation() {
               {steps.map((step, index) => (
                 <Card
                   key={step.number}
-                  className={`animate-on-scroll delay-${index + 2} border-border/60 transition-colors hover:border-accent/40`}
+                  className={cn(
+                    'animate-on-scroll border-border/60 transition-colors hover:border-accent/40',
+                    STEP_DELAYS[index],
+                  )}
                 >
                   <CardContent className="flex gap-4 p-5">
                     <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
@@ -84,16 +90,18 @@ export default function Installation() {
               ))}
             </div>
 
-            <Button asChild className="animate-on-scroll delay-5 mt-8 bg-accent text-accent-foreground hover:bg-accent/90">
-              <a
-                href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Đặt Lịch Ngay
-                <ArrowRight className="size-4" />
-              </a>
-            </Button>
+            <a
+              href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants(),
+                'animate-on-scroll scroll-delay-5 mt-8 bg-accent text-accent-foreground hover:bg-accent/90',
+              )}
+            >
+              Đặt Lịch Ngay
+              <ArrowRight className="size-4" />
+            </a>
           </div>
         </div>
       </div>

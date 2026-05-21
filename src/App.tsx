@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useScrollAnimations } from '@/hooks/useScrollAnimations';
 import Navbar from '@/components/layout/Navbar';
@@ -10,14 +10,32 @@ import Products from '@/components/sections/Products';
 import Safety from '@/components/sections/Safety';
 import Testimonials from '@/components/sections/Testimonials';
 import Installation from '@/components/sections/Installation';
-import AllProducts from '@/pages/AllProducts';
-import ProductDetail from '@/pages/ProductDetail';
+import { LoadingSpinner } from '@/components/ui/api-state';
+
+const AllProducts = lazy(() => import('@/pages/AllProducts'));
+const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  return null;
+}
+
+function HomeScrollHandler() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const scrollTo = (location.state as { scrollTo?: string } | null)?.scrollTo;
+    if (scrollTo && location.pathname === '/') {
+      requestAnimationFrame(() => {
+        document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth' });
+      });
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   return null;
 }
 
@@ -36,16 +54,23 @@ function LandingPage() {
   );
 }
 
+function PageFallback() {
+  return <LoadingSpinner className="min-h-[60vh] pt-24" />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <HomeScrollHandler />
       <Navbar />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/san-pham" element={<AllProducts />} />
-        <Route path="/san-pham/:slug" element={<ProductDetail />} />
-      </Routes>
+      <Suspense fallback={<PageFallback />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/san-pham" element={<AllProducts />} />
+          <Route path="/san-pham/:slug" element={<ProductDetail />} />
+        </Routes>
+      </Suspense>
       <Footer />
       <ChatButton />
     </BrowserRouter>

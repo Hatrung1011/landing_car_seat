@@ -21,5 +21,5 @@ export function useScrollAnimations() {
       clearTimeout(timeout);
       observer.disconnect();
     };
-  });
+  }, []);
 }

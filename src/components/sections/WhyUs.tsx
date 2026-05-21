@@ -32,16 +32,16 @@ export default function WhyUs() {
       <div className="container-page">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <span className="section-label animate-on-scroll">Vì Sao Chọn Nhật Hạ Store</span>
-          <h2 className="animate-on-scroll delay-1 mt-3 font-heading text-3xl md:text-4xl">
+          <h2 className="animate-on-scroll scroll-delay-1 mt-3 font-heading text-3xl md:text-4xl">
             Sự Lựa Chọn <em className="text-accent not-italic">Hoàn Hảo</em> Cho Con Bạn
           </h2>
-          <p className="animate-on-scroll delay-2 mt-4 text-muted-foreground">
+          <p className="animate-on-scroll scroll-delay-2 mt-4 text-muted-foreground">
             Chúng tôi không chỉ bán ghế ô tô — chúng tôi mang đến sự an tâm tuyệt đối cho mỗi chuyến
             đi của gia đình bạn.
           </p>
         </div>
 
-        <BentoGrid className="animate-on-scroll delay-3">
+        <BentoGrid className="animate-on-scroll scroll-delay-3">
           {features.map((feature) => (
             <Card
               key={feature.title}

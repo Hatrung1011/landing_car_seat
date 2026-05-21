@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MessageCircle, ShoppingCart, Shield, Truck, Gift, CheckCircle } from 'lucide-react';
 import { fetchProducts } from '@/services/api';
 import type { Product } from '@/types/product';
 import { VercelTabs } from '@/components/ui/vercel-tabs';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ErrorState, LoadingSpinner } from '@/components/ui/api-state';
 import { cn } from '@/lib/utils';
+
+const PLACEHOLDER_IMAGE = '/logo_car_seat.png';
 
 function getBadgeClass(type?: string) {
   switch (type) {
@@ -27,12 +30,14 @@ function ProductDetailContent({ slug }: { slug: string }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
 
-  useEffect(() => {
+  const loadProduct = useCallback(() => {
     let cancelled = false;
     setLoading(true);
+    setError(null);
 
     fetchProducts()
       .then((data) => {
@@ -42,7 +47,11 @@ function ProductDetailContent({ slug }: { slug: string }) {
         setSelectedImage(0);
         setSelectedColor(0);
       })
-      .catch(console.error)
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : 'Không thể tải sản phẩm');
+        }
+      })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
@@ -52,22 +61,29 @@ function ProductDetailContent({ slug }: { slug: string }) {
     };
   }, [slug]);
 
+  useEffect(() => {
+    const cleanup = loadProduct();
+    return cleanup;
+  }, [loadProduct]);
+
   if (loading) {
-    return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center py-24">
-        <div className="size-10 animate-spin rounded-full border-4 border-accent border-t-transparent" />
-        <p className="mt-4 text-muted-foreground">Đang tải sản phẩm...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Đang tải sản phẩm..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={loadProduct} />;
   }
 
   if (!product) {
     return (
       <div className="py-24 text-center">
         <h2 className="font-heading text-2xl">Sản phẩm không tìm thấy</h2>
-        <Button asChild className="mt-6 bg-accent text-accent-foreground">
-          <Link to="/san-pham">Quay lại tất cả sản phẩm</Link>
-        </Button>
+        <Link
+          to="/san-pham"
+          className={cn(buttonVariants(), 'mt-6 bg-accent text-accent-foreground hover:bg-accent/90')}
+        >
+          Quay lại tất cả sản phẩm
+        </Link>
       </div>
     );
   }
@@ -145,7 +161,7 @@ function ProductDetailContent({ slug }: { slug: string }) {
               </span>
             )}
             <img
-              src={product.images?.[selectedImage] || 'https://via.placeholder.com/800x600'}
+              src={product.images?.[selectedImage] || PLACEHOLDER_IMAGE}
               alt={product.name}
               className="aspect-square w-full object-cover"
             />
@@ -220,22 +236,27 @@ function ProductDetailContent({ slug }: { slug: string }) {
           )}
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <a
-                href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="size-4" />
-                Liên Hệ Facebook
-              </a>
-            </Button>
-            <Button asChild variant="outline">
-              <a href="https://shopee.vn/buihoangdiep" target="_blank" rel="noopener noreferrer">
-                <ShoppingCart className="size-4" />
-                Đặt Hàng
-              </a>
-            </Button>
+            <a
+              href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants(),
+                'bg-accent text-accent-foreground hover:bg-accent/90',
+              )}
+            >
+              <MessageCircle className="size-4" />
+              Liên Hệ Facebook
+            </a>
+            <a
+              href="https://shopee.vn/buihoangdiep"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({ variant: 'outline' })}
+            >
+              <ShoppingCart className="size-4" />
+              Đặt Hàng
+            </a>
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-4 rounded-xl border border-border bg-secondary/30 p-4">
@@ -267,7 +288,7 @@ function ProductDetailContent({ slug }: { slug: string }) {
               <Link key={rp.id} to={`/san-pham/${rp.slug}`}>
                 <Card className="overflow-hidden transition-all hover:-translate-y-1 hover:shadow-md">
                   <img
-                    src={rp.images?.[0] || 'https://via.placeholder.com/400x300'}
+                    src={rp.images?.[0] || PLACEHOLDER_IMAGE}
                     alt={rp.name}
                     className="aspect-[4/3] w-full object-cover"
                   />
