@@ -1,7 +1,10 @@
+import { useCallback, useState } from 'react';
 import { motion } from 'motion/react';
 import { Grid2x2, MessageCircle, Shield, Heart, Check, ChevronDown } from 'lucide-react';
 import { HighlightText } from '@/components/ui/highlight-text';
 import { RainbowButton } from '@/components/ui/rainbow-button';
+import { RotatingText } from '@/components/ui/rotate-text';
+import { ScrollReveal } from '@/components/ui/scroll-text';
 import { cn } from '@/lib/utils';
 
 const trustItems = [
@@ -10,7 +13,14 @@ const trustItems = [
   { icon: Check, title: 'Bảo hành 5 năm', sub: 'Hỗ trợ trọn đời' },
 ];
 
+const headlineHighlights = ['Hoàn Hảo', 'An toàn'];
+
 export default function Hero() {
+  const [headlineWordIndex, setHeadlineWordIndex] = useState(0);
+  const handleHeadlineWordChange = useCallback((_word: string, index: number) => {
+    setHeadlineWordIndex(index);
+  }, []);
+
   return (
     <section
       id="hero"
@@ -34,7 +44,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-primary-foreground/90 backdrop-blur-sm"
+          className="mb-6 inline-flex flex-wrap items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-primary-foreground/90 backdrop-blur-sm"
         >
           <span className="size-2 animate-pulse rounded-full bg-accent" />
           Nhập khẩu chính hãng từ Châu Âu
@@ -47,22 +57,29 @@ export default function Hero() {
           className="font-heading max-w-4xl text-4xl leading-tight text-primary-foreground md:text-5xl lg:text-6xl"
         >
           Bảo Vệ{' '}
-          <HighlightText variant="underline" color="accent" className="text-accent">
-            Hoàn Hảo
+          <HighlightText
+            variant="underline"
+            color="accent"
+            className="text-accent"
+            measureKey={headlineWordIndex}
+          >
+            <RotatingText
+              words={headlineHighlights}
+              interval={2800}
+              className="font-heading font-semibold text-accent"
+              onWordChange={handleHeadlineWordChange}
+            />
           </HighlightText>
           <br />
           Cho Hành Trình Của Bé
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 max-w-2xl text-lg leading-relaxed text-primary-foreground/75"
-        >
-          Ghế ô tô trẻ em cao cấp với chất liệu da Ý, thiết kế công thái học và đạt chuẩn an toàn
-          ECE R129 — Mang đến sự an toàn tuyệt đối cho thiên thần nhỏ của bạn.
-        </motion.p>
+        <ScrollReveal direction="up" delay={0.15} distance={40}>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-primary-foreground/75">
+            Ghế ô tô trẻ em cao cấp với chất liệu da Ý, thiết kế công thái học và đạt chuẩn an toàn
+            ECE R129 — Mang đến sự an toàn tuyệt đối cho thiên thần nhỏ của bạn.
+          </p>
+        </ScrollReveal>
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}

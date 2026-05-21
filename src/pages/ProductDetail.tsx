@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MessageCircle, ShoppingCart, Shield, Truck, Gift, CheckCircle } from 'lucide-react';
-import { fetchProducts } from '@/services/api';
+import { fetchProductBySlug, fetchProductsCached } from '@/services/api';
 import type { Product } from '@/types/product';
 import { VercelTabs } from '@/components/ui/vercel-tabs';
 import { buttonVariants } from '@/components/ui/button';
@@ -39,11 +39,11 @@ function ProductDetailContent({ slug }: { slug: string }) {
     setLoading(true);
     setError(null);
 
-    fetchProducts()
-      .then((data) => {
+    Promise.all([fetchProductBySlug(slug), fetchProductsCached()])
+      .then(([found, catalog]) => {
         if (cancelled) return;
-        setAllProducts(data);
-        setProduct(data.find((p) => p.slug === slug) ?? null);
+        setProduct(found);
+        setAllProducts(catalog);
         setSelectedImage(0);
         setSelectedColor(0);
       })
@@ -95,41 +95,41 @@ function ProductDetailContent({ slug }: { slug: string }) {
   const tabs = [
     ...(product.specs
       ? [
-          {
-            label: 'Thông Số Kỹ Thuật',
-            value: 'specs',
-            content: (
-              <table className="w-full text-sm">
-                <tbody>
-                  {Object.entries(product.specs).map(([key, value], i) => (
-                    <tr key={key} className={cn(i % 2 === 0 && 'bg-secondary/50')}>
-                      <td className="px-4 py-3 font-medium text-muted-foreground">{key}</td>
-                      <td className="px-4 py-3">{value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ),
-          },
-        ]
+        {
+          label: 'Thông Số Kỹ Thuật',
+          value: 'specs',
+          content: (
+            <table className="w-full text-sm">
+              <tbody>
+                {Object.entries(product.specs).map(([key, value], i) => (
+                  <tr key={key} className={cn(i % 2 === 0 && 'bg-secondary/50')}>
+                    <td className="px-4 py-3 font-medium text-muted-foreground">{key}</td>
+                    <td className="px-4 py-3">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ),
+        },
+      ]
       : []),
     ...(product.highlights?.length
       ? [
-          {
-            label: 'Điểm Nổi Bật',
-            value: 'highlights',
-            content: (
-              <ul className="space-y-3">
-                {product.highlights.map((h) => (
-                  <li key={h} className="flex items-start gap-3">
-                    <CheckCircle className="mt-0.5 size-5 shrink-0 text-accent" />
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
-            ),
-          },
-        ]
+        {
+          label: 'Điểm Nổi Bật',
+          value: 'highlights',
+          content: (
+            <ul className="space-y-3">
+              {product.highlights.map((h) => (
+                <li key={h} className="flex items-start gap-3">
+                  <CheckCircle className="mt-0.5 size-5 shrink-0 text-accent" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          ),
+        },
+      ]
       : []),
   ];
 

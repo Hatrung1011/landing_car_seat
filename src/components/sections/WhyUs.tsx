@@ -1,6 +1,8 @@
 import { ShieldCheck, Heart, Smile } from 'lucide-react';
 import { BentoGrid } from '@/components/ui/bento-grid';
 import { Card, CardContent } from '@/components/ui/card';
+import { HighlightText } from '@/components/ui/highlight-text';
+import { ScrollProgressText, ScrollReveal } from '@/components/ui/scroll-text';
 import { cn } from '@/lib/utils';
 
 const features = [
@@ -31,36 +33,48 @@ export default function WhyUs() {
     <section id="gioi-thieu" className="bg-secondary/50 py-24">
       <div className="container-page">
         <div className="mx-auto mb-14 max-w-2xl text-center">
-          <span className="section-label animate-on-scroll">Vì Sao Chọn Nhật Hạ Store</span>
-          <h2 className="animate-on-scroll scroll-delay-1 mt-3 font-heading text-3xl md:text-4xl">
-            Sự Lựa Chọn <em className="text-accent not-italic">Hoàn Hảo</em> Cho Con Bạn
-          </h2>
-          <p className="animate-on-scroll scroll-delay-2 mt-4 text-muted-foreground">
-            Chúng tôi không chỉ bán ghế ô tô — chúng tôi mang đến sự an tâm tuyệt đối cho mỗi chuyến
-            đi của gia đình bạn.
-          </p>
+          <ScrollReveal direction="up">
+            <span className="section-label">Vì Sao Chọn Nhật Hạ Store</span>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={0.1}>
+            <h2 className="mt-3 font-heading text-3xl md:text-4xl">
+              Sự Lựa Chọn{' '}
+              <HighlightText variant="circle" color="accent">
+                Hoàn Hảo
+              </HighlightText>{' '}
+              Cho Con Bạn
+            </h2>
+          </ScrollReveal>
+          <div className="mt-4">
+            <ScrollProgressText
+              text="Chúng tôi không chỉ bán ghế ô tô — chúng tôi mang đến sự an tâm tuyệt đối cho mỗi chuyến đi của gia đình bạn."
+              className="justify-center text-base leading-relaxed text-muted-foreground md:text-lg"
+              charClassName="font-normal"
+            />
+          </div>
         </div>
 
-        <BentoGrid className="animate-on-scroll scroll-delay-3">
-          {features.map((feature) => (
-            <Card
+        <BentoGrid>
+          {features.map((feature, index) => (
+            <ScrollReveal
               key={feature.title}
-              className={cn(
-                'group border-border/60 bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg',
-                feature.className,
-              )}
+              direction="up"
+              delay={index * 0.08}
+              className={cn('h-full', feature.className)}
             >
-              <CardContent className="flex h-full flex-col p-8">
-                <div className="mb-5 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-accent/20 group-hover:text-accent">
-                  <feature.icon className="size-7" />
-                </div>
-                <h3 className="font-heading text-xl">{feature.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {feature.description}
-                </p>
-                <div className="mt-6 h-1 w-12 rounded-full bg-accent/60 transition-all group-hover:w-full" />
-              </CardContent>
-            </Card>
+              <Card className="group h-full border-border/60 bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent className="flex h-full flex-col p-8">
+                  <div className="mb-5 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-accent/20 group-hover:text-accent">
+                    <feature.icon className="size-7" />
+                  </div>
+                  <h3 className="font-heading text-xl">{feature.title}</h3>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    {feature.description}
+                  </p>
+                  <div className="mt-6 h-1 w-12 rounded-full bg-accent/60 transition-all group-hover:w-full" />
+                </CardContent>
+              </Card>
+            </ScrollReveal>
           ))}
         </BentoGrid>
       </div>

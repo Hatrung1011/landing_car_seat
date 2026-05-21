@@ -39,6 +39,8 @@ export interface HighlightTextProps
   animationDelay?: number;
   strokeWidth?: number;
   animate?: boolean;
+  /** Bumps remeasure when dynamic children (e.g. RotatingText) change size */
+  measureKey?: number | string;
 }
 
 const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
@@ -52,6 +54,7 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
       animationDelay = 0,
       strokeWidth = 2,
       animate = true,
+      measureKey,
       ...props
     },
     ref,
@@ -59,16 +62,20 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
     const [isVisible, setIsVisible] = React.useState(!animate);
     const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
     const containerRef = React.useRef<HTMLSpanElement>(null);
+    const contentRef = React.useRef<HTMLSpanElement>(null);
 
     React.useEffect(() => {
-      const element = containerRef.current;
+      const element = contentRef.current;
       if (!element) return;
 
       const updateDimensions = () => {
-        setDimensions({
-          width: element.offsetWidth,
-          height: element.offsetHeight,
-        });
+        const width = element.offsetWidth;
+        const height = element.offsetHeight;
+        setDimensions((prev) =>
+          prev.width === width && prev.height === height
+            ? prev
+            : { width, height },
+        );
       };
 
       updateDimensions();
@@ -78,6 +85,25 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
 
       return () => resizeObserver.disconnect();
     }, []);
+
+    React.useLayoutEffect(() => {
+      const element = contentRef.current;
+      if (!element) return;
+
+      const updateDimensions = () => {
+        const width = element.offsetWidth;
+        const height = element.offsetHeight;
+        setDimensions((prev) =>
+          prev.width === width && prev.height === height
+            ? prev
+            : { width, height },
+        );
+      };
+
+      updateDimensions();
+      const raf = requestAnimationFrame(updateDimensions);
+      return () => cancelAnimationFrame(raf);
+    }, [measureKey]);
 
     React.useEffect(() => {
       if (!animate) {
@@ -118,6 +144,7 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
         height: svgHeight,
         pointerEvents: "none",
         overflow: "visible",
+        transition: "width 0.35s ease, height 0.35s ease, left 0.35s ease, top 0.35s ease",
       };
 
       const pathStyles: React.CSSProperties = {
@@ -143,6 +170,9 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
                   ...pathStyles,
                   strokeDasharray: pathLength,
                   strokeDashoffset: isVisible ? 0 : pathLength,
+                  transition: isVisible
+                    ? `stroke-dasharray 0.35s ease, stroke-dashoffset ${animationDuration}s cubic-bezier(0.65, 0, 0.35, 1) ${animationDelay}s`
+                    : pathStyles.transition,
                 }}
               />
             </svg>
@@ -249,7 +279,9 @@ const HighlightText = React.forwardRef<HTMLSpanElement, HighlightTextProps>(
         {...props}
       >
         {renderHighlight()}
-        <span className="relative z-10">{children}</span>
+        <span ref={contentRef} className="relative z-10 inline-block">
+          {children}
+        </span>
       </span>
     );
   },

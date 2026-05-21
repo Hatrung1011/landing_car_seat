@@ -1,15 +1,16 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useScrollAnimations } from '@/hooks/useScrollAnimations';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ChatButton from '@/components/layout/ChatButton';
 import Hero from '@/components/sections/Hero';
-import WhyUs from '@/components/sections/WhyUs';
 import Products from '@/components/sections/Products';
-import Safety from '@/components/sections/Safety';
 import Testimonials from '@/components/sections/Testimonials';
-import Installation from '@/components/sections/Installation';
+
+const TextMarquee = lazy(() => import('@/components/sections/TextMarquee'));
+const WhyUs = lazy(() => import('@/components/sections/WhyUs'));
+const Safety = lazy(() => import('@/components/sections/Safety'));
+const Installation = lazy(() => import('@/components/sections/Installation'));
 import { LoadingSpinner } from '@/components/ui/api-state';
 
 const AllProducts = lazy(() => import('@/pages/AllProducts'));
@@ -40,16 +41,21 @@ function HomeScrollHandler() {
 }
 
 function LandingPage() {
-  useScrollAnimations();
-
   return (
     <main>
       <Hero />
-      <WhyUs />
+      <Suspense fallback={null}>
+        <TextMarquee />
+        <WhyUs />
+      </Suspense>
       <Products />
-      <Safety />
+      <Suspense fallback={null}>
+        <Safety />
+      </Suspense>
       <Testimonials />
-      <Installation />
+      <Suspense fallback={null}>
+        <Installation />
+      </Suspense>
     </main>
   );
 }

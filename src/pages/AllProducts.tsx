@@ -146,6 +146,11 @@ export default function AllProducts() {
   });
 
   const totalPages = Math.max(1, Math.ceil(sortedProducts.length / ITEMS_PER_PAGE));
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
+
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedProducts = sortedProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 

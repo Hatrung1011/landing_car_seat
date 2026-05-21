@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { HighlightText } from '@/components/ui/highlight-text';
+import { ScrollReveal } from '@/components/ui/scroll-text';
 import { cn } from '@/lib/utils';
 
 const testimonials = [
@@ -52,17 +53,21 @@ export default function Testimonials() {
     <section id="danh-gia" className="bg-secondary/40 py-24">
       <div className="container-page">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <span className="section-label animate-on-scroll">Khách Hàng Nói Gì</span>
-          <h2 className="animate-on-scroll scroll-delay-1 mt-3 font-heading text-3xl md:text-4xl">
-            Được{' '}
-            <HighlightText variant="marker" color="accent">
-              10,000+
-            </HighlightText>{' '}
-            Gia Đình Tin Dùng
-          </h2>
+          <ScrollReveal>
+            <span className="section-label">Khách Hàng Nói Gì</span>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <h2 className="mt-3 font-heading text-3xl md:text-4xl">
+              Được{' '}
+              <HighlightText variant="marker" color="accent">
+                10,000+
+              </HighlightText>{' '}
+              Gia Đình Tin Dùng
+            </h2>
+          </ScrollReveal>
         </div>
 
-        <div className="animate-on-scroll scroll-delay-2 mx-auto max-w-3xl">
+        <ScrollReveal delay={0.15} className="mx-auto max-w-3xl">
           <Card className="overflow-hidden border-border/60 shadow-lg">
             <CardContent className="p-8 md:p-12">
               <Quote className="mb-4 size-10 text-accent/30" />
@@ -122,7 +127,7 @@ export default function Testimonials() {
               <ChevronRight className="size-5" />
             </Button>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

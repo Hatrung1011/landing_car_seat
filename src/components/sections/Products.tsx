@@ -7,6 +7,8 @@ import type { Product } from '@/types/product';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ErrorState, ProductCardSkeleton } from '@/components/ui/api-state';
+import { HighlightText } from '@/components/ui/highlight-text';
+import { ScrollReveal } from '@/components/ui/scroll-text';
 
 const PLACEHOLDER_IMAGE = '/logo_car_seat.png';
 
@@ -32,14 +34,24 @@ export default function Products() {
     <section id="san-pham" className="py-24">
       <div className="container-page">
         <div className="mx-auto mb-14 max-w-2xl text-center">
-          <span className="section-label animate-on-scroll">Bộ Sưu Tập</span>
-          <h2 className="animate-on-scroll scroll-delay-1 mt-3 font-heading text-3xl md:text-4xl">
-            Ghế Ô Tô Cao Cấp Cho Mọi Độ Tuổi
-          </h2>
-          <p className="animate-on-scroll scroll-delay-2 mt-4 text-muted-foreground">
-            Mỗi sản phẩm đều được tuyển chọn kỹ lưỡng từ các thương hiệu hàng đầu châu Âu, đảm bảo
-            an toàn và phong cách.
-          </p>
+          <ScrollReveal>
+            <span className="section-label">Bộ Sưu Tập</span>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <h2 className="mt-3 font-heading text-3xl md:text-4xl">
+              Ghế Ô Tô{' '}
+              <HighlightText variant="marker" color="accent">
+                Cao Cấp
+              </HighlightText>{' '}
+              Cho Mọi Độ Tuổi
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="mt-4 text-muted-foreground">
+              Mỗi sản phẩm đều được tuyển chọn kỹ lưỡng từ các thương hiệu hàng đầu châu Âu, đảm bảo
+              an toàn và phong cách.
+            </p>
+          </ScrollReveal>
         </div>
 
         {error ? (
@@ -101,7 +113,7 @@ export default function Products() {
           </div>
         )}
 
-        <div className="animate-on-scroll scroll-delay-4 mt-12 text-center">
+        <ScrollReveal delay={0.2} className="mt-12 text-center">
           <Link
             to="/san-pham"
             className={buttonVariants({
@@ -113,7 +125,7 @@ export default function Products() {
             Xem Tất Cả Sản Phẩm
             <ArrowRight className="size-4" />
           </Link>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

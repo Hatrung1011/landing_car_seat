@@ -42,6 +42,7 @@ export default function Navbar() {
   };
 
   const solid = !isHome || scrolled;
+  const onHero = isHome && !scrolled;
 
   return (
     <nav
@@ -49,7 +50,7 @@ export default function Navbar() {
         'fixed top-0 right-0 left-0 z-50 transition-all duration-300',
         solid
           ? 'border-b border-border/60 bg-background/95 shadow-sm backdrop-blur-md'
-          : 'bg-transparent',
+          : 'bg-primary/20 backdrop-blur-sm',
       )}
     >
       <div className="container-page flex h-18 items-center justify-between gap-4 py-3">
@@ -57,11 +58,26 @@ export default function Navbar() {
           <img
             src="/logo_car_seat.png"
             alt="Nhật Hạ"
-            className="h-9 w-9 rounded-full object-cover ring-2 ring-accent/40"
+            className={cn(
+              'h-9 w-9 rounded-full object-cover ring-2',
+              onHero ? 'ring-accent/60' : 'ring-accent/40',
+            )}
           />
           <div className="hidden flex-col sm:flex">
-            <span className="font-heading text-base font-semibold text-primary">Nhật Hạ Store</span>
-            <span className="text-xs tracking-wider text-muted-foreground uppercase">
+            <span
+              className={cn(
+                'font-heading text-base font-semibold',
+                onHero ? 'text-primary-foreground' : 'text-primary',
+              )}
+            >
+              Nhật Hạ Store
+            </span>
+            <span
+              className={cn(
+                'text-xs tracking-wider uppercase',
+                onHero ? 'text-primary-foreground/65' : 'text-muted-foreground',
+              )}
+            >
               Premium Car Seats
             </span>
           </div>
@@ -73,7 +89,12 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => scrollToSection(link.id)}
-                className="text-sm font-medium text-foreground/80 transition-colors hover:text-accent"
+                className={cn(
+                  'text-sm font-medium transition-colors',
+                  onHero
+                    ? 'text-primary-foreground/90 hover:text-accent'
+                    : 'text-foreground/80 hover:text-accent',
+                )}
               >
                 {link.label}
               </button>
@@ -88,7 +109,8 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ size: 'default' }),
-              'hidden bg-accent text-accent-foreground hover:bg-accent/90 sm:inline-flex',
+              'hidden shadow-md sm:inline-flex',
+              'bg-accent text-accent-foreground shadow-md hover:bg-accent/90',
             )}
           >
             <MessageCircle className="size-4" />
@@ -97,7 +119,12 @@ export default function Navbar() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'lg:hidden')}
+              className={cn(
+                buttonVariants({ variant: 'outline', size: 'icon' }),
+                'lg:hidden',
+                onHero &&
+                'border-primary-foreground/40 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20',
+              )}
               aria-label="Mở menu"
             >
               <Menu className="size-5" />
