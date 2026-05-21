@@ -1,0 +1,136 @@
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
+
+const navLinks = [
+  { id: 'gioi-thieu', label: 'Giới Thiệu' },
+  { id: 'san-pham', label: 'Sản Phẩm' },
+  { id: 'an-toan', label: 'An Toàn' },
+  { id: 'danh-gia', label: 'Đánh Giá' },
+  { id: 'dich-vu', label: 'Dịch Vụ' },
+];
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setOpen(false);
+    if (!isHome) {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const solid = !isHome || scrolled;
+
+  return (
+    <nav
+      className={cn(
+        'fixed top-0 right-0 left-0 z-50 transition-all duration-300',
+        solid
+          ? 'border-b border-border/60 bg-background/95 shadow-sm backdrop-blur-md'
+          : 'bg-transparent',
+      )}
+    >
+      <div className="container-page flex h-18 items-center justify-between gap-4 py-3">
+        <Link to="/" className="flex items-center gap-3">
+          <img
+            src="/logo_car_seat.png"
+            alt="Nhật Hạ"
+            className="h-9 w-9 rounded-full object-cover ring-2 ring-accent/40"
+          />
+          <div className="hidden flex-col sm:flex">
+            <span className="font-heading text-base font-semibold text-primary">Nhật Hạ Store</span>
+            <span className="text-xs tracking-wider text-muted-foreground uppercase">
+              Premium Car Seats
+            </span>
+          </div>
+        </Link>
+
+        <ul className="hidden items-center gap-8 lg:flex">
+          {navLinks.map((link) => (
+            <li key={link.id}>
+              <button
+                type="button"
+                onClick={() => scrollToSection(link.id)}
+                className="text-sm font-medium text-foreground/80 transition-colors hover:text-accent"
+              >
+                {link.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex items-center gap-2">
+          <Button asChild className="hidden bg-accent text-accent-foreground hover:bg-accent/90 sm:inline-flex">
+            <a
+              href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="size-4" />
+              Liên Hệ
+            </a>
+          </Button>
+
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="outline" size="icon" aria-label="Mở menu">
+                <Menu className="size-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px]">
+              <SheetHeader>
+                <SheetTitle className="font-heading text-left">Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="mt-8 flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => scrollToSection(link.id)}
+                    className="text-left text-base font-medium hover:text-accent"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+                <Button asChild className="mt-4 bg-accent text-accent-foreground">
+                  <a
+                    href="https://www.facebook.com/share/1Cvxse99kA/?mibextid=wwXIfr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Liên Hệ Facebook
+                  </a>
+                </Button>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </nav>
+  );
+}
